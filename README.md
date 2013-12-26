@@ -17,7 +17,7 @@ var jsonlint = require("gulp-jsonlint");
 
 gulp.src("./src/*.json")
     .pipe(jsonlint())
-    .pipe(gulp.dest("./dist"));
+    .pipe(jsonlint.reporter());
 ```
 
 ## API
