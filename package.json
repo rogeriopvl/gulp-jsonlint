@@ -1,15 +1,14 @@
 {
   "name": "gulp-jsonlint",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A plugin for Gulp",
   "keywords": [
-    "gulpplugin"
+    "gulpplugin", "jsonlint", "json", "lint"
   ],
   "homepage": "https://github.com/rogeriopvl/gulp-jsonlint",
   "bugs": "https://github.com/rogeriopvl/gulp-jsonlint/issues",
   "author": {
     "name": "Rogério Vicente",
-    "email": "",
     "url": "https://github.com/rogeriopvl"
   },
   "main": "./index.js",
