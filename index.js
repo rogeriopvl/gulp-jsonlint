@@ -10,7 +10,7 @@ var formatOutput = function (msg) {
 
     if (msg) { output.message = msg; }
 
-    output.success = msg || true;
+    output.success = msg ? false : true;
 
     return output;
 };
