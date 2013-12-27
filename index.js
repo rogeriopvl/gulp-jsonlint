@@ -28,7 +28,6 @@ var jsonLintPlugin = function (options) {
         catch (err) {
             errorMessage = err.message;
         }
-
         file.jsonlint = formatOutput(errorMessage);
 
         cb(null, file);
@@ -36,7 +35,7 @@ var jsonLintPlugin = function (options) {
 };
 
 var defaultReporter = function (file) {
-    gutil.log(c.yellow('Error on file ') + c.cyan(file.path));
+    gutil.log(c.yellow('Error on file ') + c.magenta(file.path));
     gutil.log(c.red(file.jsonlint.message));
 };
 
@@ -51,7 +50,6 @@ jsonLintPlugin.reporter = function (customReporter) {
         if (file.jsonlint && !file.jsonlint.success) {
             reporter(file);
         }
-
         return cb(null, file);
     });
 };
