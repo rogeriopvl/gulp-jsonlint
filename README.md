@@ -20,11 +20,42 @@ gulp.src("./src/*.json")
     .pipe(jsonlint.reporter());
 ```
 
+Using a custom reporter:
+
+```javascript
+var jsonlint = require('gulp-jsonlint');
+var gutil = require('gulp-util');
+
+var myCustomReporter = function (file) {
+    gutil.log('File ' + file.path + ' is not valid JSON.');
+};
+
+gulp.src('./src/*.json');
+    .pipe(jsonlint())
+    .pipe(jsonlint.reporter(myCustomReporter));
+```
+
 ## API
 
 ### jsonlint(options)
 
 For now, `options` are not supported yet.
+
+### jsonlint.reporter(customReporter)
+
+#### customReporter(file)
+
+Type: `function`
+
+You can pass a custom reporter function. If ommited then the default reporter will be used.
+
+The `customReporter` function will be called with the argument `file`.
+
+##### file
+
+Type: `object`
+
+This argument has the attribute `jsonlint` wich is an object that contains a `success` boolean attribute. If it's false you also have a `message` attribute containing the jsonlint error message.
 
 ## License
 
