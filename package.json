@@ -1,7 +1,7 @@
 {
   "name": "gulp-jsonlint",
   "version": "0.0.1",
-  "description": "A plugin for Gulp",
+  "description": "A jsonlint plugin for Gulp",
   "keywords": [
     "gulpplugin", "jsonlint", "json", "lint"
   ],
