@@ -1,19 +1,17 @@
 /*global describe, it*/
-"use strict";
+'use strict';
 
-var fs = require("fs");
+var fs = require('fs');
 var path = require('path');
-var es = require("event-stream");
-var should = require("should");
+var should = require('should');
 
 var jsonLintPlugin = require('../');
 
-require("mocha");
+require('mocha');
 
-var gutil = require("gulp-util"),
-    jsonlint = require("../");
+var gutil = require('gulp-util');
 
-var getFile = function(filePath) {
+var getFile = function (filePath) {
     filePath = 'test/' + filePath;
 
     return new gutil.File({
@@ -24,16 +22,16 @@ var getFile = function(filePath) {
     });
 };
 
-describe("gulp-jsonlint", function () {
+describe('gulp-jsonlint', function () {
 
-    it('should pass file through', function(done) {
+    it('should pass file through', function (done) {
         var cbCounter = 0;
 
         var file = getFile('fixtures/valid.json');
 
         var stream = jsonLintPlugin();
 
-        stream.on('data', function(f) {
+        stream.on('data', function (f) {
             should.exist(f);
             should.exist(f);
             should.exist(f.relative);
@@ -43,7 +41,7 @@ describe("gulp-jsonlint", function () {
             ++cbCounter;
         });
 
-        stream.once('end', function() {
+        stream.once('end', function () {
             cbCounter.should.equal(1);
             done();
         });
@@ -52,21 +50,21 @@ describe("gulp-jsonlint", function () {
         stream.end();
     });
 
-    it('should send success status when json is valid', function(done) {
+    it('should send success status when json is valid', function (done) {
         var cbCounter = 0;
 
         var file = getFile('fixtures/valid.json');
 
         var stream = jsonLintPlugin();
 
-        stream.on('data', function(f) {
+        stream.on('data', function (f) {
             ++cbCounter;
             should.exist(f.jsonlint.success);
             f.jsonlint.success.should.equal(true);
             should.not.exist(f.jsonlint.message);
         });
 
-        stream.once('end', function() {
+        stream.once('end', function () {
             cbCounter.should.equal(1);
             done();
         });
@@ -75,14 +73,14 @@ describe("gulp-jsonlint", function () {
         stream.end();
     });
 
-    it('should send jsonlint error message when json is invalid', function(done) {
+    it('should send jsonlint error message when json is invalid', function (done) {
         var cbCounter = 0;
 
         var file = getFile('fixtures/invalid.json');
 
         var stream = jsonLintPlugin();
 
-        stream.on('data', function(f) {
+        stream.on('data', function (f) {
             ++cbCounter;
             should.exist(f.jsonlint.success);
             f.jsonlint.success.should.equal(false);
@@ -90,7 +88,7 @@ describe("gulp-jsonlint", function () {
             f.jsonlint.message.should.match(/^Parse error/);
         });
 
-        stream.once('end', function() {
+        stream.once('end', function () {
             cbCounter.should.equal(1);
             done();
         });
@@ -99,18 +97,18 @@ describe("gulp-jsonlint", function () {
         stream.end();
     });
 
-    it('should lint more than one file', function(done) {
+    it('should lint more than one file', function (done) {
         var cbCounter = 0;
         var file1 = getFile('fixtures/invalid.json');
         var file2 = getFile('fixtures/valid.json');
 
         var stream = jsonLintPlugin();
 
-        stream.on('data', function(f) {
+        stream.on('data', function () {
             ++cbCounter;
         });
 
-        stream.once('end', function() {
+        stream.once('end', function () {
             cbCounter.should.equal(2);
             done();
         });
