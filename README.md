@@ -1,6 +1,6 @@
 # gulp-jsonlint [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 
-> jsonlint plugin for [gulp](https://github.com/wearefractal/gulp)
+> jsonlint plugin for [gulp](http://gulpjs.com/)
 
 ## Usage
 
@@ -62,10 +62,10 @@ This argument has the attribute `jsonlint` wich is an object that contains a `su
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
 
 [npm-url]: https://npmjs.org/package/gulp-jsonlint
-[npm-image]: https://badge.fury.io/js/gulp-jsonlint.png
+[npm-image]: https://badge.fury.io/js/gulp-jsonlint.svg
 
 [travis-url]: http://travis-ci.org/rogeriopvl/gulp-jsonlint
-[travis-image]: https://secure.travis-ci.org/rogeriopvl/gulp-jsonlint.png?branch=master
+[travis-image]: https://secure.travis-ci.org/rogeriopvl/gulp-jsonlint.svg?branch=master
 
 [depstat-url]: https://david-dm.org/rogeriopvl/gulp-jsonlint
-[depstat-image]: https://david-dm.org/rogeriopvl/gulp-jsonlint.png
+[depstat-image]: https://david-dm.org/rogeriopvl/gulp-jsonlint.svg
