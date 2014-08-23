@@ -1,6 +1,6 @@
 'use strict';
 
-var es = require('event-stream');
+var mapStream = require('map-stream');
 var gutil = require('gulp-util');
 var c = gutil.colors;
 var jsonlint = require('jsonlint');
@@ -19,7 +19,7 @@ var jsonLintPlugin = function (options) {
     // TODO: add support for jsonlint options
     options = options || {};
 
-    return es.map(function (file, cb) {
+    return mapStream(function (file, cb) {
         var errorMessage = '';
 
         try {
@@ -46,7 +46,7 @@ jsonLintPlugin.reporter = function (customReporter) {
         reporter = customReporter;
     }
 
-    return es.map(function (file, cb) {
+    return mapStream(function (file, cb) {
         if (file.jsonlint && !file.jsonlint.success) {
             reporter(file);
         }
