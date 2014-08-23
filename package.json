@@ -3,7 +3,10 @@
   "version": "0.0.3",
   "description": "A jsonlint plugin for Gulp",
   "keywords": [
-    "gulpplugin", "jsonlint", "json", "lint"
+    "gulpplugin",
+    "jsonlint",
+    "json",
+    "lint"
   ],
   "homepage": "https://github.com/rogeriopvl/gulp-jsonlint",
   "bugs": "https://github.com/rogeriopvl/gulp-jsonlint/issues",
@@ -20,14 +23,13 @@
     "test": "mocha"
   },
   "dependencies": {
-    "event-stream": "*",
+    "gulp-util": "~3.0.0",
     "jsonlint": "~1.6.0",
-    "gulp-util": "~2.2.0"
+    "map-stream": "~0.1.0"
   },
   "devDependencies": {
-    "mocha": "~1.14.0",
-    "should": "~2.1.0",
-    "gulp-util": "~2.2.0"
+    "mocha": "~1.21.4",
+    "should": "~4.0.4"
   },
   "engines": {
     "node": ">=0.8.0",
