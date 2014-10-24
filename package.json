@@ -15,6 +15,10 @@
     "url": "https://github.com/rogeriopvl"
   },
   "main": "./index.js",
+  "files": [
+    "index.js",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/rogeriopvl/gulp-jsonlint.git"
