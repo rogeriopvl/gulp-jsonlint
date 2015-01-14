@@ -30,7 +30,7 @@ var myCustomReporter = function (file) {
     gutil.log('File ' + file.path + ' is not valid JSON.');
 };
 
-gulp.src('./src/*.json');
+gulp.src('./src/*.json')
     .pipe(jsonlint())
     .pipe(jsonlint.reporter(myCustomReporter));
 ```
