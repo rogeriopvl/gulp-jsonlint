@@ -54,4 +54,18 @@ jsonLintPlugin.reporter = function (customReporter) {
     });
 };
 
+jsonLintPlugin.failReporter = function(){
+  return mapStream(function (file, cb) {
+
+    if (!file.jsonlint || file.jsonlint.success) {
+      return cb(null, file);
+    }
+
+    return cb(
+      new gutil.PluginError('gulp-jsonlint', 'JSONLint failed for ' + file.relative),
+      file
+    );
+  });
+};
+
 module.exports = jsonLintPlugin;
