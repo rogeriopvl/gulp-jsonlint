@@ -57,6 +57,21 @@ Type: `object`
 
 This argument has the attribute `jsonlint` wich is an object that contains a `success` boolean attribute. If it's false you also have a `message` attribute containing the jsonlint error message.
 
+### Fail on errors
+
+Pipe the file stream to `jsonlint.failReporter()` to fail on errors.
+
+```javascript
+var jsonlint = require('gulp-jsonlint');
+
+gulp.task('lint', function() {
+  gulp.files('lib/*.json')
+    .pipe(jsonlint())
+    .pipe(jsonlint.reporter()) // Display errors
+    .pipe(jsonlint.failReporter()); // Fail on error
+});
+```
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
