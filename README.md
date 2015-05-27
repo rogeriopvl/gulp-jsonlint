@@ -57,6 +57,22 @@ Type: `object`
 
 This argument has the attribute `jsonlint` wich is an object that contains a `success` boolean attribute. If it's false you also have a `message` attribute containing the jsonlint error message.
 
+### jsonlint.failOnError()
+
+Stop a task/stream if an jsonlint error has been reported for any file.
+
+```javascript
+// Cause the stream to stop(/fail) before copying an invalid JS file to the output directory
+gulp.src('**/*.js')
+	.pipe(jsonlint())
+	.pipe(jsonlint.failOnError())
+	.pipe(gulp.dest('../output'));
+```
+
+### jsonlint.failAfterError()
+
+Stop a task/stream if an jsonlint error has been reported for any file, but wait for all of them to be processed first.
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
