@@ -57,12 +57,12 @@ jsonLintPlugin.reporter = function (customReporter) {
 };
 
 /**
- * Fail when an eslint error is found in eslint results.
+ * Fail when an jsonlint error is found in jsonlint results.
  */
 jsonLintPlugin.failOnError = function() {
 
-    return through.obj(function(file, enc, cb) {
-        if(file.jsonlint.success === false) {
+    return through.obj(function (file, enc, cb) {
+        if (file.jsonlint.success === false) {
             var error = new PluginError(
                     'gulp-jsonlint',
                     {
@@ -80,21 +80,22 @@ jsonLintPlugin.failOnError = function() {
 /**
  * Fail when the stream ends if any jsonlint error(s) occurred
  */
-jsonLintPlugin.failAfterError = function() {
+jsonLintPlugin.failAfterError = function () {
     var errorCount = 0;
 
-    return through.obj(function(file, enc, cb) {
+    return through.obj(function (file, enc, cb) {
         errorCount += file.jsonlint.success === false
 
         cb(null, file);
 
-    }, function(cb) {
+    }, function (cb) {
         if (errorCount > 0) {
             this.emit('error', new PluginError(
                 'gulp-jsonlint',
                 {
                     name: 'JSONLintError',
-                    message: 'Failed with ' + errorCount + (errorCount === 1 ? ' error' : ' errors')
+                    message: 'Failed with ' + errorCount +
+                        (errorCount === 1 ? ' error' : ' errors')
                 }
             ));
         }
