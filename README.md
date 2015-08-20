@@ -39,7 +39,18 @@ gulp.src('./src/*.json')
 
 ### jsonlint(options)
 
-For now, `options` are not supported yet.
+#### options
+
+Type: `object`
+
+Options to pass to `jsonlint`.
+
+##### comments
+
+Type: `boolean`  
+Default: `false`
+
+Whether or not to allow comments in the `JSON` files.
 
 ### jsonlint.reporter(customReporter)
 
@@ -47,7 +58,7 @@ For now, `options` are not supported yet.
 
 Type: `function`
 
-You can pass a custom reporter function. If ommited then the default reporter will be used.
+You can pass a custom reporter function. If omitted then the default reporter will be used.
 
 The `customReporter` function will be called with the argument `file`.
 
@@ -55,7 +66,7 @@ The `customReporter` function will be called with the argument `file`.
 
 Type: `object`
 
-This argument has the attribute `jsonlint` wich is an object that contains a `success` boolean attribute. If it's false you also have a `message` attribute containing the jsonlint error message.
+This argument has the attribute `jsonlint` which is an object that contains a `success` boolean attribute. If it's false you also have a `message` attribute containing the jsonlint error message.
 
 ### jsonlint.failOnError()
 

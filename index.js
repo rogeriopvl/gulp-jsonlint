@@ -6,30 +6,36 @@ var c = gutil.colors;
 var jsonlint = require('jsonlint');
 var through = require('through2');
 var PluginError = require('gulp-util').PluginError;
+var stripJsonComments = require('strip-json-comments');
 
 var formatOutput = function (msg) {
     var output = {};
 
-    if (msg) { output.message = msg; }
-
+    output.message = msg;
     output.success = msg ? false : true;
 
     return output;
 };
 
 var jsonLintPlugin = function (options) {
-    // TODO: add support for jsonlint options
     options = options || {};
 
     return mapStream(function (file, cb) {
         var errorMessage = '';
 
+        var content = String(file.contents);
+
+        if (options.comments) {
+            content = stripJsonComments(content);
+        }
+
         try {
-            jsonlint.parse(String(file.contents));
+            jsonlint.parse(content);
         }
         catch (err) {
             errorMessage = err.message;
         }
+
         file.jsonlint = formatOutput(errorMessage);
 
         cb(null, file);

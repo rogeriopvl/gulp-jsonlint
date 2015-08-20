@@ -30,6 +30,7 @@
     "gulp-util": "^3.0.1",
     "jsonlint": "^1.6.2",
     "map-stream": "^0.1.0",
+    "strip-json-comments": "^1.0.4",
     "through2": "^0.6.0"
   },
   "devDependencies": {

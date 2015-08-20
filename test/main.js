@@ -32,13 +32,14 @@ describe('gulp-jsonlint', function () {
         var stream = jsonLintPlugin();
 
         stream.on('data', function (f) {
-            should.exist(f);
+            ++cbCounter;
             should.exist(f);
             should.exist(f.relative);
             should.exist(f.contents);
             f.path.should.equal('test/fixtures/valid.json');
             f.relative.should.equal('valid.json');
-            ++cbCounter;
+            f.jsonlint.message.should.equal('');
+            f.jsonlint.success.should.equal(true);
         });
 
         stream.once('end', function () {
@@ -60,8 +61,31 @@ describe('gulp-jsonlint', function () {
         stream.on('data', function (f) {
             ++cbCounter;
             should.exist(f.jsonlint.success);
+            f.jsonlint.message.should.equal('');
             f.jsonlint.success.should.equal(true);
-            should.not.exist(f.jsonlint.message);
+        });
+
+        stream.once('end', function () {
+            cbCounter.should.equal(1);
+            done();
+        });
+
+        stream.write(file);
+        stream.end();
+    });
+
+    it('should send success status when json has comments', function (done) {
+        var cbCounter = 0;
+
+        var file = getFile('fixtures/commented.json');
+
+        var stream = jsonLintPlugin({comments: true});
+
+        stream.on('data', function (f) {
+            ++cbCounter;
+            should.exist(f.jsonlint.success);
+            f.jsonlint.message.should.equal('');
+            f.jsonlint.success.should.equal(true);
         });
 
         stream.once('end', function () {
@@ -83,9 +107,9 @@ describe('gulp-jsonlint', function () {
         stream.on('data', function (f) {
             ++cbCounter;
             should.exist(f.jsonlint.success);
-            f.jsonlint.success.should.equal(false);
-            should.exist(f.jsonlint.message);
+            f.jsonlint.message.should.not.equal('');
             f.jsonlint.message.should.match(/^Parse error/);
+            f.jsonlint.success.should.equal(false);
         });
 
         stream.once('end', function () {
