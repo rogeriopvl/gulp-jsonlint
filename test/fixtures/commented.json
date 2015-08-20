@@ -1,0 +1,13 @@
+/*!
+ * Title comment
+ */
+{
+    // line comment
+    "key1": "value1",
+    /**
+     * block comment
+     */
+    "key2": 123,
+    "key4": false, // after comment
+    /* before comment */"key5": []
+}
