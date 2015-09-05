@@ -18,7 +18,6 @@ var formatOutput = function (msg) {
 };
 
 var jsonLintPlugin = function (options) {
-    // TODO: add support for jsonlint options
     options = options || {};
 
     return mapStream(function (file, cb) {
