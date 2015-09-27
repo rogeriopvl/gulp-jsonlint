@@ -27,14 +27,14 @@
     "test": "mocha"
   },
   "dependencies": {
-    "gulp-util": "^3.0.1",
-    "jsonlint": "^1.6.2",
+    "gulp-util": "3.0.6",
+    "jsonlint": "1.6.2",
     "map-stream": "^0.1.0",
-    "through2": "^0.6.0"
+    "through2": "0.6.5"
   },
   "devDependencies": {
-    "mocha": "^2.0.0",
-    "should": "^4.1.0"
+    "mocha": "2.3.3",
+    "should": "4.6.5"
   },
   "engines": {
     "node": ">=0.8.0",
