@@ -33,7 +33,6 @@ describe('gulp-jsonlint', function () {
 
         stream.on('data', function (f) {
             should.exist(f);
-            should.exist(f);
             should.exist(f.relative);
             should.exist(f.contents);
             f.path.should.equal('test/fixtures/valid.json');
