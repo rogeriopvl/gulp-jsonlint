@@ -1,5 +1,7 @@
 # gulp-jsonlint [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/rogeriopvl/gulp-jsonlint.svg)](https://greenkeeper.io/)
+
 > jsonlint plugin for [gulp](http://gulpjs.com/)
 
 ## Usage
