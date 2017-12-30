@@ -1,11 +1,11 @@
 'use strict';
 
 var mapStream = require('map-stream');
-var gutil = require('gulp-util');
-var c = gutil.colors;
+var colors = require('ansi-colors');
 var jsonlint = require('jsonlint');
 var through = require('through2');
-var PluginError = require('gulp-util').PluginError;
+var PluginError = require('plugin-error')
+var log = require('fancy-log')
 
 var formatOutput = function (msg) {
     var output = {};
@@ -36,8 +36,8 @@ var jsonLintPlugin = function (options) {
 };
 
 var defaultReporter = function (file) {
-    gutil.log(c.yellow('Error on file ') + c.magenta(file.path));
-    gutil.log(c.red(file.jsonlint.message));
+    log(colors.yellow('Error on file ') + colors.magenta(file.path));
+    log(colors.red(file.jsonlint.message));
 };
 
 jsonLintPlugin.reporter = function (customReporter) {
