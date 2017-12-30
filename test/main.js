@@ -4,17 +4,17 @@
 var fs = require('fs');
 var path = require('path');
 var should = require('should');
+var Vinyl = require('vinyl')
 
 var jsonLintPlugin = require('../');
 
 require('mocha');
 
-var gutil = require('gulp-util');
 
 var getFile = function (filePath) {
     filePath = 'test/' + filePath;
 
-    return new gutil.File({
+    return new Vinyl({
         path: filePath,
         cwd: 'test/',
         base: path.dirname(filePath),
