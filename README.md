@@ -24,10 +24,10 @@ Using a custom reporter:
 
 ```javascript
 var jsonlint = require('gulp-jsonlint');
-var gutil = require('gulp-util');
+var log = require('fancy-log');
 
 var myCustomReporter = function (file) {
-    gutil.log('File ' + file.path + ' is not valid JSON.');
+    log('File ' + file.path + ' is not valid JSON.');
 };
 
 gulp.src('./src/*.json')
