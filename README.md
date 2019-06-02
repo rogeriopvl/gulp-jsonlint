@@ -42,11 +42,16 @@ gulp.src('./src/*.json')
 Options can be passed as keys in an object to the `jsonlint` function. The following are their defaults:
 
     jsonlint({
+        // parsing
         mode: 'json',
         ignoreComments: false,
         ignoreTrailingCommas: false,
         allowSingleQuotedStrings: false,
         allowDuplicateObjectKeys: true,
+        // formatting
+        format: false,
+        indent: 2,
+        sortKeys: false
     })
 
 * `mode`, when set to "cjson" or "json5", enables some other flags automatically
@@ -54,6 +59,10 @@ Options can be passed as keys in an object to the `jsonlint` function. The follo
 * `ignoreTrailingCommas`, when `true` trailing commas in objects and arrays will be ignored
 * `allowSingleQuotedStrings`, when `true` single quotes will be accepted as alternative delimiters for strings
 * `allowDuplicateObjectKeys`, when `false` duplicate keys in objects will be reported as an error
+
+* `format`, when `true` `JSON.stringify` will be used to format the JavaScript (if it is valid)
+* `indent`, the value passed to `JSON.stringify`, it can be the number of spaces, or string like "\t"
+* `sortKeys`, when `true` keys of objects in the output JSON will be sorted alphabetically (`format` has to be set to `true` too)
 
 ### jsonlint.reporter(customReporter)
 

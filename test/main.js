@@ -46,6 +46,21 @@ function parseInvalidFile (filePath, done, options) {
     stream.end();
 }
 
+function formatValidFile (filePath, done, options, newContent) {
+    var file = getFile(filePath);
+    var stream = jsonLintPlugin(options);
+
+    stream.on('data', function (f) {
+        should.exist(f);
+        should.exist(f.contents);
+        String(f.contents).should.equal(newContent + '\n');
+    });
+
+    stream.once('end', done);
+    stream.write(file);
+    stream.end();
+}
+
 describe('gulp-jsonlint', function () {
     it('should pass file through', function (done) {
         var cbCounter = 0;
@@ -171,5 +186,21 @@ describe('gulp-jsonlint', function () {
         parseValidFile('fixtures/json5.json', done, {
             mode: 'json5'
         });
+    });
+
+    it('can format the output', function (done) {
+        formatValidFile('fixtures/json5.json', done, {
+            mode: 'json5',
+            format: true
+        }, '{\n  "key": "value"\n}');
+    });
+
+    it('can sort object keys in the output', function (done) {
+        formatValidFile('fixtures/comments.json', done, {
+            ignoreComments: true,
+            format: true,
+            indent: 0,
+            sortKeys: true
+        }, '{"key1":1,"key2":2}');
     });
 });
