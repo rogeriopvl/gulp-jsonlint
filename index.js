@@ -2,7 +2,7 @@
 
 var mapStream = require('map-stream');
 var colors = require('ansi-colors');
-var jsonlint = require('jsonlint');
+var jsonlint = require('@prantlf/jsonlint');
 var through = require('through2');
 var PluginError = require('plugin-error')
 var log = require('fancy-log')
