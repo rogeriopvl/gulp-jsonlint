@@ -188,6 +188,34 @@ describe('gulp-jsonlint', function () {
         });
     });
 
+    it('succeeds validation using JSON Schema', function (done) {
+        parseValidFile('fixtures/data.json', done, {
+            schema: {
+                src: 'test/fixtures/schema.json'
+            }
+        });
+    });
+
+    it('fails validation using JSON Schema', function (done) {
+        var file = getFile('fixtures/valid.json');
+        var stream = jsonLintPlugin({
+            schema: {
+                src: 'test/fixtures/schema.json'
+            }
+        });
+
+        stream.on('data', function (f) {
+            should.exist(f.jsonlint.success);
+            f.jsonlint.success.should.equal(false);
+            should.exist(f.jsonlint.message);
+            f.jsonlint.message.should.match(/should have required property/);
+        });
+
+        stream.once('end', done);
+        stream.write(file);
+        stream.end();
+    });
+
     it('can format the output', function (done) {
         formatValidFile('fixtures/json5.json', done, {
             mode: 'json5',

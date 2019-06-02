@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Schema for data.json",
+  "properties": {
+    "key": {
+      "type": "string",
+      "title": "Required property"
+    }
+  },
+  "required": [
+    "key"
+  ]
+}
