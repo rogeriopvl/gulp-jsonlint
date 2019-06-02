@@ -4,7 +4,7 @@
 var fs = require('fs');
 var path = require('path');
 var should = require('should');
-var Vinyl = require('vinyl')
+var Vinyl = require('vinyl');
 
 var jsonLintPlugin = require('../');
 

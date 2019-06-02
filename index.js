@@ -4,8 +4,8 @@ var mapStream = require('map-stream');
 var colors = require('ansi-colors');
 var jsonlint = require('@prantlf/jsonlint');
 var through = require('through2');
-var PluginError = require('plugin-error')
-var log = require('fancy-log')
+var PluginError = require('plugin-error');
+var log = require('fancy-log');
 
 var formatOutput = function (msg) {
     var output = {};
@@ -61,15 +61,16 @@ jsonLintPlugin.reporter = function (customReporter) {
 jsonLintPlugin.failOnError = function() {
 
     return through.obj(function (file, enc, cb) {
+        var error;
         if (file.jsonlint.success === false) {
-            var error = new PluginError(
-                    'gulp-jsonlint',
-                    {
-                        name: 'JSONLintError',
-                        filename: file.path,
-                        message: file.jsonlint.message,
-                    }
-                );
+            error = new PluginError(
+                'gulp-jsonlint',
+                {
+                    name: 'JSONLintError',
+                    filename: file.path,
+                    message: file.jsonlint.message,
+                }
+            );
         }
 
         return cb(error, file);
@@ -83,7 +84,7 @@ jsonLintPlugin.failAfterError = function () {
     var errorCount = 0;
 
     return through.obj(function (file, enc, cb) {
-        errorCount += file.jsonlint.success === false
+        errorCount += file.jsonlint.success === false;
 
         cb(null, file);
 

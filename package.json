@@ -24,7 +24,8 @@
     "url": "git://github.com/rogeriopvl/gulp-jsonlint.git"
   },
   "scripts": {
-    "test": "mocha"
+    "lint": "jshint index.js test/main.js",
+    "test": "npm run lint && mocha"
   },
   "dependencies": {
     "ansi-colors": "3.2.4",
@@ -35,6 +36,7 @@
     "through2": "3.0.1"
   },
   "devDependencies": {
+    "jshint": "2.10.2",
     "mocha": "6.1.4",
     "should": "13.2.3",
     "vinyl": "2.2.0"
