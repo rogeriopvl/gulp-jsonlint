@@ -1,6 +1,6 @@
 # gulp-jsonlint [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 
-> jsonlint plugin for [gulp](http://gulpjs.com/)
+> [JSON]/[JSON5] file syntax validation plugin for [`gulp`] using [`jsonlint`]
 
 ## Usage
 
@@ -39,7 +39,21 @@ gulp.src('./src/*.json')
 
 ### jsonlint(options)
 
-For now, `options` are not supported yet.
+Options can be passed as keys in an object to the `jsonlint` function. The following are their defaults:
+
+    jsonlint({
+        mode: 'json',
+        ignoreComments: false,
+        ignoreTrailingCommas: false,
+        allowSingleQuotedStrings: false,
+        allowDuplicateObjectKeys: true,
+    })
+
+* `mode`, when set to "cjson" or "json5", enables some other flags automatically
+* `ignoreComments`, when `true` JavaScript-style single-line and multiple-line comments will be recognised and ignored
+* `ignoreTrailingCommas`, when `true` trailing commas in objects and arrays will be ignored
+* `allowSingleQuotedStrings`, when `true` single quotes will be accepted as alternative delimiters for strings
+* `allowDuplicateObjectKeys`, when `false` duplicate keys in objects will be reported as an error
 
 ### jsonlint.reporter(customReporter)
 
@@ -75,7 +89,7 @@ Stop a task/stream if an jsonlint error has been reported for any file, but wait
 
 ## License
 
-[MIT License](http://en.wikipedia.org/wiki/MIT_License)
+[MIT License]
 
 [npm-url]: https://npmjs.org/package/gulp-jsonlint
 [npm-image]: https://badge.fury.io/js/gulp-jsonlint.svg
@@ -85,3 +99,9 @@ Stop a task/stream if an jsonlint error has been reported for any file, but wait
 
 [depstat-url]: https://david-dm.org/rogeriopvl/gulp-jsonlint
 [depstat-image]: https://david-dm.org/rogeriopvl/gulp-jsonlint.svg
+
+[MIT License]: http://en.wikipedia.org/wiki/MIT_License
+[`gulp`]: http://gulpjs.com/
+[`jsonlint`]: https://prantlf.github.io/jsonlint/
+[JSON]: https://tools.ietf.org/html/rfc8259
+[JSON5]: https://spec.json5.org
