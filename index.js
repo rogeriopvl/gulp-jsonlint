@@ -1,38 +1,118 @@
 'use strict'
 
+var fs = require('fs')
 var mapStream = require('map-stream')
 var colors = require('ansi-colors')
-var jsonlint = require('jsonlint')
+var jsonlint = require('@prantlf/jsonlint')
+var validator = require('@prantlf/jsonlint/lib/validator')
+var sorter = require('@prantlf/jsonlint/lib/sorter')
 var through = require('through2')
 var PluginError = require('plugin-error')
 var log = require('fancy-log')
 
-var formatOutput = function(msg) {
-  var output = {}
+var jsonLintPlugin = function(options) {
+  options = Object.assign(
+    {
+      mode: 'json',
+      ignoreComments: false,
+      ignoreTrailingCommas: false,
+      allowSingleQuotedStrings: false,
+      allowDuplicateObjectKeys: true,
+      schema: {},
+      format: false,
+      indent: 2,
+      sortKeys: false
+    },
+    options
+  )
+  var schema = options.schema
+  var parserOptions = {
+    mode: options.mode,
+    ignoreComments:
+      options.ignoreComments ||
+      options.cjson ||
+      options.mode === 'cjson' ||
+      options.mode === 'json5',
+    ignoreTrailingCommas:
+      options.ignoreTrailingCommas || options.mode === 'json5',
+    allowSingleQuotedStrings:
+      options.allowSingleQuotedStrings || options.mode === 'json5',
+    allowDuplicateObjectKeys: options.allowDuplicateObjectKeys,
+    environment: schema.environment,
+    limitedErrorInfo: !(
+      options.ignoreComments ||
+      options.cjson ||
+      options.allowSingleQuotedStrings
+    )
+  }
+  var schemaContent
 
-  if (msg) {
-    output.message = msg
+  function createResult(message) {
+    var result = {}
+    if (message) {
+      result.message = message
+      result.success = false
+    } else {
+      result.success = true
+    }
+    return result
   }
 
-  output.success = msg ? false : true
+  function formatOutput(parsedData, file) {
+    if (options.format) {
+      if (options.sortKeys) {
+        parsedData = sorter.sortObject(parsedData)
+      }
+      var formatted = JSON.stringify(parsedData, null, options.indent) + '\n'
+      file.contents = new Buffer(formatted)
+    }
+  }
 
-  return output
-}
+  function validateSchema(parsedData, file, finish) {
+    var errorMessage
+    try {
+      var validate = validator.compile(schemaContent, parserOptions)
+      validate(parsedData)
+      formatOutput(parsedData, file)
+    } catch (error) {
+      errorMessage = error.message
+    }
+    finish(errorMessage)
+  }
 
-var jsonLintPlugin = function(options) {
-  options = options || {}
+  function loadAndValidateSchema(parsedData, file, finish) {
+    if (schemaContent) {
+      validateSchema(parsedData, finish)
+    } else {
+      fs.readFile(schema.src, 'utf-8', function(error, fileContent) {
+        if (error) {
+          finish(error.message)
+        } else {
+          schemaContent = fileContent
+          validateSchema(parsedData, file, finish)
+        }
+      })
+    }
+  }
 
   return mapStream(function(file, cb) {
-    var errorMessage = ''
+    var errorMessage
+    function finish(errorMessage) {
+      file.jsonlint = createResult(errorMessage)
+      cb(null, file)
+    }
 
     try {
-      jsonlint.parse(String(file.contents))
-    } catch (err) {
-      errorMessage = err.message
+      var parsedData = jsonlint.parse(String(file.contents), parserOptions)
+      if (schema.src) {
+        loadAndValidateSchema(parsedData, file, finish)
+        return
+      }
+      formatOutput(parsedData, file)
+    } catch (error) {
+      errorMessage = error.message
     }
-    file.jsonlint = formatOutput(errorMessage)
-
-    cb(null, file)
+    finish(errorMessage)
   })
 }
 

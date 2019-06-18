@@ -1,6 +1,6 @@
 # gulp-jsonlint [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 
-> jsonlint plugin for [gulp](http://gulpjs.com/)
+> [JSON]/[JSON5] file syntax validation plugin for [`gulp`] using [`jsonlint`]
 
 ## Usage
 
@@ -39,7 +39,45 @@ gulp.src('./src/*.json')
 
 ### jsonlint(options)
 
-For now, `options` are not supported yet.
+Options can be passed as keys in an object to the `jsonlint` function. The following are their defaults:
+
+    jsonlint({
+        // parsing
+        mode: 'json',
+        ignoreComments: false,
+        ignoreTrailingCommas: false,
+        allowSingleQuotedStrings: false,
+        allowDuplicateObjectKeys: true,
+        // formatting
+        format: false,
+        indent: 2,
+        sortKeys: false
+    })
+
+* `mode`, when set to "cjson" or "json5", enables some other flags automatically
+* `ignoreComments`, when `true` JavaScript-style single-line and multiple-line comments will be recognised and ignored
+* `ignoreTrailingCommas`, when `true` trailing commas in objects and arrays will be ignored
+* `allowSingleQuotedStrings`, when `true` single quotes will be accepted as alternative delimiters for strings
+* `allowDuplicateObjectKeys`, when `false` duplicate keys in objects will be reported as an error
+
+* `format`, when `true` `JSON.stringify` will be used to format the JavaScript (if it is valid)
+* `indent`, the value passed to `JSON.stringify`, it can be the number of spaces, or string like "\t"
+* `sortKeys`, when `true` keys of objects in the output JSON will be sorted alphabetically (`format` has to be set to `true` too)
+
+#### Schema Validation
+
+You can validate JSON files using JSON Schema drafts 04, 06 or 07, if you specify the schema in addition to other options:
+
+    jsonlint({
+      schema: {
+        src: 'some/manifest-schema.json',
+        environment: 'json-schema-draft-04'
+      }
+    })
+
+* `schema`, when set the source file will be validated using ae JSON Schema in addition to the syntax checks
+* `src`, when filled with a file path, the file will be used as a source of the JSON Schema
+* `environment`, can specify the version of the JSON Schema draft to use for validation: "json-schema-draft-04", "json-schema-draft-06" or "json-schema-draft-07" (if not set, the schema draft version will be inferred automatically)
 
 ### jsonlint.reporter(customReporter)
 
@@ -75,7 +113,7 @@ Stop a task/stream if an jsonlint error has been reported for any file, but wait
 
 ## License
 
-[MIT License](http://en.wikipedia.org/wiki/MIT_License)
+[MIT License]
 
 [npm-url]: https://npmjs.org/package/gulp-jsonlint
 [npm-image]: https://badge.fury.io/js/gulp-jsonlint.svg
@@ -85,3 +123,10 @@ Stop a task/stream if an jsonlint error has been reported for any file, but wait
 
 [depstat-url]: https://david-dm.org/rogeriopvl/gulp-jsonlint
 [depstat-image]: https://david-dm.org/rogeriopvl/gulp-jsonlint.svg
+
+[MIT License]: http://en.wikipedia.org/wiki/MIT_License
+[`gulp`]: http://gulpjs.com/
+[`jsonlint`]: https://prantlf.github.io/jsonlint/
+[JSON]: https://tools.ietf.org/html/rfc8259
+[JSON5]: https://spec.json5.org
+[JSON Schema]: https://json-schema.org

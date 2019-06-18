@@ -21,6 +21,49 @@ var getFile = function(filePath) {
   })
 }
 
+function parseValidFile(filePath, done, options) {
+  var file = getFile(filePath)
+  var stream = jsonLintPlugin(options)
+
+  stream.on('data', function(f) {
+    should.exist(f.jsonlint.success)
+    f.jsonlint.success.should.equal(true)
+  })
+
+  stream.once('end', done)
+  stream.write(file)
+  stream.end()
+}
+
+function parseInvalidFile(filePath, done, options) {
+  var file = getFile(filePath)
+  var stream = jsonLintPlugin(options)
+
+  stream.on('data', function(f) {
+    should.exist(f.jsonlint.success)
+    f.jsonlint.success.should.equal(false)
+  })
+
+  stream.once('end', done)
+  stream.write(file)
+  stream.end()
+}
+
+function formatValidFile(filePath, done, options, newContent) {
+  var file = getFile(filePath)
+  var stream = jsonLintPlugin(options)
+
+  stream.on('data', function(f) {
+    should.exist(f)
+    should.exist(f.contents)
+    String(f.contents).should.equal(newContent + '\n')
+  })
+
+  stream.once('end', done)
+  stream.write(file)
+  stream.end()
+}
+
 describe('gulp-jsonlint', function() {
   it('should pass file through', function(done) {
     var cbCounter = 0
@@ -104,7 +147,6 @@ describe('gulp-jsonlint', function() {
     stream.on('data', function() {
       ++cbCounter
     })
-
     stream.once('end', function() {
       cbCounter.should.equal(2)
       done()
@@ -113,5 +155,99 @@ describe('gulp-jsonlint', function() {
     stream.write(file1)
     stream.write(file2)
     stream.end()
+  })
+
+  it('supports option for ignoring comments', function(done) {
+    parseValidFile('fixtures/comments.json', done, {
+      ignoreComments: true
+    })
+  })
+
+  it('supports option for ignoring trailing commas', function(done) {
+    parseValidFile('fixtures/trailing-commas.json', done, {
+      ignoreTrailingCommas: true
+    })
+  })
+
+  it('supports option for allowing single-quoted strings', function(done) {
+    parseValidFile('fixtures/single-quotes.json', done, {
+      allowSingleQuotedStrings: true
+    })
+  })
+
+  it('does not report duplicate object keys as an error by default', function(done) {
+    parseValidFile('fixtures/duplicate-object-keys.json', done)
+  })
+
+  it('supports option for disallowing single-quoted strings', function(done) {
+    parseInvalidFile('fixtures/duplicate-object-keys.json', done, {
+      allowDuplicateObjectKeys: false
+    })
+  })
+
+  it('ignores comments in the "cjson" mode', function(done) {
+    parseValidFile('fixtures/comments.json', done, {
+      mode: 'cjson'
+    })
+  })
+
+  it('accepts JSON5 format in the "json5" mode', function(done) {
+    parseValidFile('fixtures/json5.json', done, {
+      mode: 'json5'
+    })
+  })
+
+  it('succeeds validation using JSON Schema', function(done) {
+    parseValidFile('fixtures/data.json', done, {
+      schema: {
+        src: 'test/fixtures/schema.json'
+      }
+    })
+  })
+
+  it('fails validation using JSON Schema', function(done) {
+    var file = getFile('fixtures/valid.json')
+    var stream = jsonLintPlugin({
+      schema: {
+        src: 'test/fixtures/schema.json'
+      }
+    })
+
+    stream.on('data', function(f) {
+      should.exist(f.jsonlint.success)
+      f.jsonlint.success.should.equal(false)
+      should.exist(f.jsonlint.message)
+      f.jsonlint.message.should.match(/should have required property/)
+    })
+
+    stream.once('end', done)
+    stream.write(file)
+    stream.end()
+  })
+
+  it('can format the output', function(done) {
+    formatValidFile(
+      'fixtures/json5.json',
+      done,
+      {
+        mode: 'json5',
+        format: true
+      },
+      '{\n  "key": "value"\n}'
+    )
+  })
+
+  it('can sort object keys in the output', function(done) {
+    formatValidFile(
+      'fixtures/comments.json',
+      done,
+      {
+        ignoreComments: true,
+        format: true,
+        indent: 0,
+        sortKeys: true
+      },
+      '{"key1":1,"key2":2}'
+    )
   })
 })
