@@ -39,12 +39,7 @@ var jsonLintPlugin = function(options) {
     allowSingleQuotedStrings:
       options.allowSingleQuotedStrings || options.mode === 'json5',
     allowDuplicateObjectKeys: options.allowDuplicateObjectKeys,
-    environment: schema.environment,
-    limitedErrorInfo: !(
-      options.ignoreComments ||
-      options.cjson ||
-      options.allowSingleQuotedStrings
-    )
+    environment: schema.environment
   }
   var schemaContent
 
