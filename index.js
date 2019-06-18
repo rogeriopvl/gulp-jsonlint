@@ -60,7 +60,7 @@ var jsonLintPlugin = function(options) {
         parsedData = sorter.sortObject(parsedData)
       }
       var formatted = JSON.stringify(parsedData, null, options.indent) + '\n'
-      file.contents = new Buffer(formatted)
+      file.contents = Buffer.from(formatted)
     }
   }
 
