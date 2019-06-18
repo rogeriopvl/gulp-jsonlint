@@ -2,7 +2,8 @@
 
 var mapStream = require('map-stream')
 var colors = require('ansi-colors')
-var jsonlint = require('jsonlint')
+var jsonlint = require('@prantlf/jsonlint')
+var sorter = require('@prantlf/jsonlint/lib/sorter')
 var through = require('through2')
 var PluginError = require('plugin-error')
 var log = require('fancy-log')
@@ -20,13 +21,50 @@ var formatOutput = function(msg) {
 }
 
 var jsonLintPlugin = function(options) {
-  options = options || {}
+  options = Object.assign(
+    {
+      mode: 'json',
+      ignoreComments: false,
+      ignoreTrailingCommas: false,
+      allowSingleQuotedStrings: false,
+      allowDuplicateObjectKeys: true,
+      format: false,
+      indent: 2,
+      sortKeys: false
+    },
+    options
+  )
 
   return mapStream(function(file, cb) {
     var errorMessage = ''
 
+    var parserOptions = {
+      mode: options.mode,
+      ignoreComments:
+        options.ignoreComments ||
+        options.cjson ||
+        options.mode === 'cjson' ||
+        options.mode === 'json5',
+      ignoreTrailingCommas:
+        options.ignoreTrailingCommas || options.mode === 'json5',
+      allowSingleQuotedStrings:
+        options.allowSingleQuotedStrings || options.mode === 'json5',
+      allowDuplicateObjectKeys: options.allowDuplicateObjectKeys,
+      limitedErrorInfo: !(
+        options.ignoreComments ||
+        options.cjson ||
+        options.allowSingleQuotedStrings
+      )
+    }
     try {
-      jsonlint.parse(String(file.contents))
+      var parsedData = jsonlint.parse(String(file.contents), parserOptions)
+      if (options.format) {
+        if (options.sortKeys) {
+          parsedData = sorter.sortObject(parsedData)
+        }
+        var formatted = JSON.stringify(parsedData, null, options.indent) + '\n'
+        file.contents = new Buffer(formatted)
+      }
     } catch (err) {
       errorMessage = err.message
     }
