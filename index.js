@@ -26,6 +26,7 @@ var jsonLintPlugin = function(options) {
     options
   )
   var schema = options.schema
+  // Share the same options for parsing both data and schema for simplicity.
   var parserOptions = {
     mode: options.mode,
     ignoreComments:
@@ -68,11 +69,11 @@ var jsonLintPlugin = function(options) {
     }
   }
 
-  function validateSchema(parsedData, file, finish) {
+  function validateSchema(data, file, finish) {
     var errorMessage
     try {
       var validate = validator.compile(schemaContent, parserOptions)
-      validate(parsedData)
+      var parsedData = validate(data, parserOptions)
       formatOutput(parsedData, file)
     } catch (error) {
       errorMessage = error.message
@@ -80,16 +81,16 @@ var jsonLintPlugin = function(options) {
     finish(errorMessage)
   }
 
-  function loadAndValidateSchema(parsedData, file, finish) {
+  function loadAndValidateSchema(data, file, finish) {
     if (schemaContent) {
-      validateSchema(parsedData, finish)
+      validateSchema(data, finish)
     } else {
       fs.readFile(schema.src, 'utf-8', function(error, fileContent) {
         if (error) {
           finish(error.message)
         } else {
           schemaContent = fileContent
-          validateSchema(parsedData, file, finish)
+          validateSchema(data, file, finish)
         }
       })
     }
@@ -103,11 +104,14 @@ var jsonLintPlugin = function(options) {
     }
 
     try {
-      var parsedData = jsonlint.parse(String(file.contents), parserOptions)
+      var data = String(file.contents)
+      // Parse JSON data from string by the schema validator to get
+      // error messages including the location in the source string.
       if (schema.src) {
-        loadAndValidateSchema(parsedData, file, finish)
+        loadAndValidateSchema(data, file, finish)
         return
       }
+      var parsedData = jsonlint.parse(data, parserOptions)
       formatOutput(parsedData, file)
     } catch (error) {
       errorMessage = error.message

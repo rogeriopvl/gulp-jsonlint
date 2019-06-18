@@ -32,7 +32,7 @@
   "dependencies": {
     "ansi-colors": "3.2.4",
     "fancy-log": "1.3.3",
-    "@prantlf/jsonlint": "7.0.0",
+    "@prantlf/jsonlint": "8.0.0",
     "map-stream": "0.0.7",
     "plugin-error": "1.0.1",
     "through2": "3.0.1"
