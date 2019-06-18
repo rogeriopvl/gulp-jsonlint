@@ -1,6 +1,6 @@
 .editorconfig
+.eslintrc
 .gitignore
-.jshintrc
 .npmignore
 .travis.yml
 node_modules/
