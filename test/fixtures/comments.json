@@ -1,0 +1,6 @@
+/* Commented configuration */
+{
+    "key2": 2,
+    // String parameter
+    "key1": 1
+}

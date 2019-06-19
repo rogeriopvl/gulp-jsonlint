@@ -27,15 +27,16 @@
     "pretest": "npm run lint",
     "test": "mocha",
     "lint": "eslint **/*.js",
-    "lint:fix": "prettier --write index.js test/**/*.js"
+    "lint:fix": "prettier --write index.js lib/**/*.js test/**/*.js",
+    "examples": "gulp valid ; gulp one ; gulp two ; gulp three ; gulp all"
   },
   "dependencies": {
-    "ansi-colors": "^3.2.3",
-    "fancy-log": "^1.3.3",
-    "jsonlint": "1.6.3",
+    "ansi-colors": "3.2.4",
+    "fancy-log": "1.3.3",
+    "@prantlf/jsonlint": "8.0.0",
     "map-stream": "0.0.7",
     "plugin-error": "1.0.1",
-    "through2": "^3.0.0"
+    "through2": "3.0.1"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
@@ -44,14 +45,14 @@
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
-    "mocha": "^6.0.1",
+    "gulp": "4.0.2",
+    "mocha": "6.1.4",
     "prettier": "^1.18.2",
     "should": "13.2.3",
-    "vinyl": "^2.2.0"
+    "vinyl": "2.2.0"
   },
   "engines": {
-    "node": ">= 4",
-    "npm": ">=1.2.10"
+    "node": ">=6"
   },
   "licenses": [
     {
