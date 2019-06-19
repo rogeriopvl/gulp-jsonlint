@@ -43,10 +43,11 @@ var jsonLintPlugin = function(options) {
   }
   var schemaContent
 
-  function createResult(message) {
+  function createResult(error) {
     var result = {}
-    if (message) {
-      result.message = message
+    if (error) {
+      result.error = error
+      result.message = error.message
       result.success = false
     } else {
       result.success = true
@@ -65,15 +66,15 @@ var jsonLintPlugin = function(options) {
   }
 
   function validateSchema(data, file, finish) {
-    var errorMessage
+    var lastError
     try {
       var validate = validator.compile(schemaContent, parserOptions)
       var parsedData = validate(data, parserOptions)
       formatOutput(parsedData, file)
     } catch (error) {
-      errorMessage = error.message
+      lastError = error
     }
-    finish(errorMessage)
+    finish(lastError)
   }
 
   function loadAndValidateSchema(data, file, finish) {
@@ -82,7 +83,7 @@ var jsonLintPlugin = function(options) {
     } else {
       fs.readFile(schema.src, 'utf-8', function(error, fileContent) {
         if (error) {
-          finish(error.message)
+          finish(error)
         } else {
           schemaContent = fileContent
           validateSchema(data, file, finish)
@@ -92,9 +93,9 @@ var jsonLintPlugin = function(options) {
   }
 
   return mapStream(function(file, cb) {
-    var errorMessage
-    function finish(errorMessage) {
-      file.jsonlint = createResult(errorMessage)
+    var lastError
+    function finish(error) {
+      file.jsonlint = createResult(error)
       cb(null, file)
     }
 
@@ -109,27 +110,65 @@ var jsonLintPlugin = function(options) {
       var parsedData = jsonlint.parse(data, parserOptions)
       formatOutput(parsedData, file)
     } catch (error) {
-      errorMessage = error.message
+      lastError = error
     }
-    finish(errorMessage)
+    finish(lastError)
   })
 }
 
-var defaultReporter = function(file) {
+const FORMATTERS = {
+  prose: require('./lib/formatters/prose'),
+  msbuild: require('./lib/formatters/visual-studio')
+}
+
+const REPORTERS = {
+  exception: require('./lib/reporters/exception'),
+  jshint: require('./lib/reporters/jshint-style')
+}
+
+function getProjectRelativeFilePath(file) {
+  var filePath = file.path
+  if (filePath.indexOf(__dirname) === 0) {
+    return filePath.substr(__dirname.length + 1)
+  }
+  return filePath
+}
+
+var defaultCompleteReporter = function(file) {
   log(colors.yellow('Error on file ') + colors.magenta(file.path))
   log(colors.red(file.jsonlint.message))
 }
 
-jsonLintPlugin.reporter = function(customReporter) {
-  var reporter = defaultReporter
+jsonLintPlugin.reporter = function(customCompleteReporter) {
+  var completeReporter = defaultCompleteReporter
+  var formatter
+  var reporter
 
-  if (typeof customReporter === 'function') {
-    reporter = customReporter
+  if (typeof customCompleteReporter === 'function') {
+    completeReporter = customCompleteReporter
+  } else if (typeof customCompleteReporter === 'object') {
+    formatter = customCompleteReporter.formatter || 'prose'
+    reporter = customCompleteReporter.reporter || 'exception'
+    if (typeof formatter !== 'function') {
+      formatter = FORMATTERS[formatter]
+    }
+    if (typeof reporter !== 'function') {
+      reporter = REPORTERS[reporter]
+    }
   }
 
   return mapStream(function(file, cb) {
     if (file.jsonlint && !file.jsonlint.success) {
-      reporter(file)
+      if (formatter) {
+        var filePath = getProjectRelativeFilePath(file)
+        log(
+          formatter(filePath, file.jsonlint.error) +
+            '\n' +
+            reporter(filePath, file.jsonlint.error)
+        )
+      } else {
+        completeReporter(file)
+      }
     }
     return cb(null, file)
   })

@@ -35,6 +35,19 @@ gulp.src('./src/*.json')
     .pipe(jsonlint.reporter(myCustomReporter));
 ```
 
+Using an alternative error location *formatter* and error message *reporter*:
+
+```javascript
+var jsonlint = require('gulp-jsonlint');
+
+gulp.src('./src/*.json')
+    .pipe(jsonlint({
+        formatter: 'msbuild', // prose or msbuild
+        reporter: 'jshint'    // exception or jshint
+    }))
+    .pipe(jsonlint.reporter(myCustomReporter));
+```
+
 ## API
 
 ### jsonlint(options)
@@ -93,7 +106,25 @@ The `customReporter` function will be called with the argument `file`.
 
 Type: `object`
 
-This argument has the attribute `jsonlint` wich is an object that contains a `success` boolean attribute. If it's false you also have a `message` attribute containing the jsonlint error message.
+This argument has the attribute `jsonlint` which is an object that contains a `success` boolean attribute. If it's false you also have a `message` attribute containing the jsonlint error message.
+
+### jsonlint.reporter(options)
+
+##### options
+
+Type: `object`: { `formatter`, `reporter` }
+
+If you pass an object to `reporter`, the default reported will not be used. There will be two optional string properties recognized in the object - `formatter` and `reporter`. The report will be divided to two parts - the single-line error location (for the formatter) and the rest of the error message (for the reporter). The two parts will be handled by the chosen formatter and reporter.
+
+| Formatter | Description |
+| :-------- | :---------- |
+| `prose`   | Writes a sentence with the file name and the line and column of the error occurrence (default) |
+| `msbuild` | Mimics the format of the first line of the error report printed by MS Visual Studio |
+
+| Reporter    | Description |
+| :---------- | :---------- |
+| `exception` | Writes the original message returned by `jsonlint` (default) |
+| `jshint`    | Mimics the format of the error report printed by `jshint`    |
 
 ### jsonlint.failOnError()
 
@@ -110,6 +141,96 @@ gulp.src('**/*.js')
 ### jsonlint.failAfterError()
 
 Stop a task/stream if an jsonlint error has been reported for any file, but wait for all of them to be processed first.
+
+## Examples
+
+The following examples can be tested and the console output observed by using the sample [gulpfile.js] in this repository. All of them can be run by `npm run examples`:
+
+Successful JSON file validation:
+
+    $ gulp valid
+    [06:59:17] Using gulpfile .../gulp-jsonlint/gulpfile.js
+    [06:59:17] Starting 'valid'...
+    [06:59:17] Finished 'valid' after 15 ms
+
+Validation stopped immediately after the first error occurred, plain error printed as returned by `jsonlint`, no colouring:
+
+    $ gulp one
+    [06:59:17] Using gulpfile .../gulp-jsonlint/gulpfile.js
+    [06:59:17] Starting 'one'...
+    [06:59:17] 'one' errored after 17 ms
+    [06:59:17] JSONLintError in plugin "gulp-jsonlint"
+    Message:
+        Parse error on line 2, column 14:
+    {    "key1": forgotquotes    "key...
+    --------------^
+    Unexpected token o
+    Details:
+        domain: [object Object]
+        domainThrown: true
+
+Validation stopped after printing all validation failures, the default (single) error reporter used, colouring enabled:
+
+    $ gulp two
+    [06:59:18] Using gulpfile .../gulp-jsonlint/gulpfile.js
+    [06:59:18] Starting 'two'...
+    [06:59:18] Error on file .../gulp-jsonlint/test/fixtures/comments.json
+    [06:59:18] Parse error on line 1, column 1:
+    /* Commented configu...
+    ^
+    Unexpected token /
+    [06:59:18] 'two' errored after 25 ms
+    [06:59:18] JSONLintError in plugin "gulp-jsonlint"
+    Message:
+        Failed with 1 error
+    Details:
+        domain: [object Object]
+        domainThrown: true
+
+Validation stopped after printing all validation failures, the default (separate) formatter and reporter used, colouring enabled:
+
+    $ gulp three
+    [06:59:18] Using gulpfile .../gulp-jsonlint/gulpfile.js
+    [06:59:18] Starting 'three'...
+    [06:59:18] File test/fixtures/json5.json failed JSON validation at line 2, column 5.
+    {    // String parameter...
+    -----^
+    Unexpected token /
+    [06:59:18] 'three' errored after 17 ms
+    [06:59:18] JSONLintError in plugin "gulp-jsonlint"
+    Message:
+        Failed with 1 error
+    Details:
+        domain: [object Object]
+        domainThrown: true
+
+Validation stopped after printing all validation failures, the `msbuild` formatter and `jshint` reported used, colouring enabled:
+
+    $ gulp all
+    [06:59:19] Using gulpfile .../gulp-jsonlint/gulpfile.js
+    [06:59:19] Starting 'all'...
+    [06:59:19] test/fixtures/comments.json(1,1): error: failed JSON validation
+         1 | /* Commented configu...
+             ^ Unexpected token /
+    [06:59:19] test/fixtures/invalid.json(2,14): error: failed JSON validation
+         2 | ..."key1": forgotquo...
+                         ^ Unexpected token o
+    [06:59:19] test/fixtures/json5.json(2,5): error: failed JSON validation
+         2 | {    // String param...
+                  ^ Unexpected token /
+    [06:59:19] test/fixtures/single-quotes.json(2,5): error: failed JSON validation
+         2 | {    'key1': 'value'...
+                  ^ Unexpected token '
+    [06:59:19] test/fixtures/trailing-commas.json(3,1): error: failed JSON validation
+         3 | ... "value",}
+                         ^ Unexpected token }
+    [06:59:19] 'all' errored after 32 ms
+    [06:59:19] JSONLintError in plugin "gulp-jsonlint"
+    Message:
+        Failed with 5 errors
+    Details:
+        domain: [object Object]
+        domainThrown: true
 
 ## License
 
@@ -130,3 +251,5 @@ Stop a task/stream if an jsonlint error has been reported for any file, but wait
 [JSON]: https://tools.ietf.org/html/rfc8259
 [JSON5]: https://spec.json5.org
 [JSON Schema]: https://json-schema.org
+
+[gulpfile.js]: ./gulpfile.js

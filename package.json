@@ -27,7 +27,8 @@
     "pretest": "npm run lint",
     "test": "mocha",
     "lint": "eslint **/*.js",
-    "lint:fix": "prettier --write index.js test/**/*.js"
+    "lint:fix": "prettier --write index.js lib/**/*.js test/**/*.js",
+    "examples": "gulp valid ; gulp one ; gulp two ; gulp three ; gulp all"
   },
   "dependencies": {
     "ansi-colors": "3.2.4",
@@ -44,6 +45,7 @@
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
+    "gulp": "4.0.2",
     "mocha": "6.1.4",
     "prettier": "^1.18.2",
     "should": "13.2.3",
